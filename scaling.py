@@ -96,3 +96,19 @@ class ScalingApp(ctk.CTk):
         self.entry_z.bind("<KeyRelease>", self.calculate)
 
         self.update_entry_states()
+
+    # Selected radio = write privilege ; Else = readonly.
+    def update_entry_states(self):
+        selected_value = self.var.get()
+        if selected_value == 0:
+            self.entry_x.configure(state="normal")
+            self.entry_y.configure(state="readonly")
+            self.entry_z.configure(state="readonly")
+        elif selected_value == 1:
+            self.entry_x.configure(state="readonly")
+            self.entry_y.configure(state="normal")
+            self.entry_z.configure(state="readonly")
+        elif selected_value == 2:
+            self.entry_x.configure(state="readonly")
+            self.entry_y.configure(state="readonly")
+            self.entry_z.configure(state="normal")
