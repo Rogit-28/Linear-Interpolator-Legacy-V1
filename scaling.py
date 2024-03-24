@@ -112,3 +112,56 @@ class ScalingApp(ctk.CTk):
             self.entry_x.configure(state="readonly")
             self.entry_y.configure(state="readonly")
             self.entry_z.configure(state="normal")
+
+    def calculate(self, event=None):
+        try:
+            x1 = self.validate_entry(self.entry_x1)
+            x2 = self.validate_entry(self.entry_x2)
+            y1 = self.validate_entry(self.entry_y1)
+            y2 = self.validate_entry(self.entry_y2)
+            z1 = self.validate_entry(self.entry_z1)
+            z2 = self.validate_entry(self.entry_z2)
+
+            # Check for None values before performing calculations
+            if any(val is None for val in [x1, x2, y1, y2, z1, z2]):
+                return
+
+            selected_value = self.var.get()
+
+            if selected_value == 0:  # Calculate Y and Z based on X
+                input_val = self.validate_entry(self.entry_x)
+                if input_val is None:
+                    return
+                y = self._calculate_scaled_value(input_val, x1, x2, y1, y2)
+                z = self._calculate_scaled_value(input_val, x1, x2, z1, z2)
+                self.display_result(self.entry_y, y)
+                self.display_result(self.entry_z, z)
+
+            elif selected_value == 1:  # Calculate X and Z based on Y
+                input_val = self.validate_entry(self.entry_y)
+                if input_val is None:
+                    return
+                x = self._calculate_scaled_value(input_val, y1, y2, x1, x2)
+                z = self._calculate_scaled_value(input_val, y1, y2, z1, z2)
+                self.display_result(self.entry_x, x)
+                self.display_result(self.entry_z, z)
+
+            elif selected_value == 2:  # Calculate X and Y based on Z
+                input_val = self.validate_entry(self.entry_z)
+                if input_val is None:
+                    return
+                x = self._calculate_scaled_value(input_val, z1, z2, x1, x2)
+                y = self._calculate_scaled_value(input_val, z1, z2, y1, y2)
+                self.display_result(self.entry_x, x)
+                self.display_result(self.entry_y, y)
+
+        except (ZeroDivisionError, ValueError) as e:
+            self.display_error(str(e), event.widget if event else self)
+
+    @staticmethod
+    def _calculate_scaled_value(input_value, input_start, input_end, output_start, output_end):
+        if (input_end - input_start) == 0:
+            raise ZeroDivisionError("Input range cannot be zero.")
+        slope = (output_end - output_start) / (input_end - input_start)
+        intercept = output_start - (slope * input_start)
+        return slope * input_value + intercept
