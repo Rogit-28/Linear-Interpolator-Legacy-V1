@@ -165,3 +165,67 @@ class ScalingApp(ctk.CTk):
         slope = (output_end - output_start) / (input_end - input_start)
         intercept = output_start - (slope * input_start)
         return slope * input_value + intercept
+
+    def validate_entry(self, entry):
+        value = entry.get().strip()
+
+        if not value:
+            self.clear_outputs()
+            return None
+
+        if value == "-":
+            return None
+
+        # Check if Z entry and Z in HEX checkbox is active
+        if entry == self.entry_z and self.z_in_hex_var.get():
+            if value.startswith("0x"):
+                value = value[2:]
+
+            try:
+                decimal_value = int(value, 16)
+                return float(decimal_value)
+            except ValueError:
+                self.clear_outputs()
+                raise ValueError("Invalid hexadecimal input!")
+
+        try:
+            return float(value)
+        except ValueError:
+            self.clear_outputs()
+            raise ValueError("Invalid decimal input!")
+
+
+    def display_result(self, entry, value):
+        if entry == self.entry_z and self.z_in_hex_var.get():
+            value = hex(int(value))
+
+        entry.configure(state="normal")
+        entry.delete(0, "end")
+        entry.insert(0, f"{value}")
+        entry.configure(state="readonly")
+
+    def display_error(self, message, widget):
+        if self.error_popup:
+            self.error_popup.destroy()
+        self.error_popup = ctk.CTkToplevel(self)
+        self.error_popup.title("Error")
+        self.error_popup.geometry("300x100")
+        label = ctk.CTkLabel(self.error_popup, text=message)
+        label.pack(expand=True)
+        self.error_popup.transient(self)
+        self.error_popup.grab_set()
+        self.error_popup.focus()
+
+    def clear_outputs(self):
+        self.entry_x.configure(state="normal")
+        self.entry_y.configure(state="normal")
+        self.entry_z.configure(state="normal")
+        self.entry_x.delete(0, "end")
+        self.entry_y.delete(0, "end")
+        self.entry_z.delete(0, "end")
+        self.update_entry_states()
+
+
+if __name__ == "__main__":
+    app = ScalingApp()
+    app.mainloop()
