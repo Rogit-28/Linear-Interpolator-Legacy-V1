@@ -53,3 +53,29 @@ where:
     ```
     python scaling.py
     ```
+
+## 🛠️ How to Build
+
+To build the executable, you will need `pyinstaller`.
+
+1.  Install `pyinstaller`:
+    ```
+    pip install pyinstaller
+    ```
+2.  Build the executable:
+    ```
+    pyinstaller --onefile --windowed --icon=logo.ico scaling.py
+    ```
+
+## 🐳 How to Use the Dockerfile
+
+To build and run the application with Docker, you will need to have Docker installed on your system.
+
+1.  Build the Docker image:
+    ```
+    docker build -t scaling-app .
+    ```
+2.  Run the Docker container:
+    ```
+    docker run -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix scaling-app
+    ```
