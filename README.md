@@ -1,4 +1,6 @@
-#  Scaling Range 📏
+# This repo is now archived and in legacy. Find V2 with improved UI and functionality here: https://github.com/Rogit-28/Linear-Interpolator-V2
+
+#  Scaling Range (Legacy)
 
 A simple and intuitive GUI application for linear scaling of 3D coordinates.
 
